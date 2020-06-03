@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Class-Path: 
+Created-By: 13 (Oracle Corporation)
+Gradle-Version: 6.1
+Groovy-Version: 2.5.8
+Plugin-Date: 2020-06-03T17:14:28+0200
+Plugin-Version: v1.0.0
+Plugin-Early: false
+Plugin-Canloadatruntime: true
+Author: Pieter Fiers (Ubipo)
+Plugin-Icon: icons/icon.svg
+Plugin-Link: https://github.com/ubipo/shrinkwrap
+Plugin-Mainversion: 16239
+Plugin-Class: net.pfiers.shrinkwrap.Shrinkwrap
+Plugin-Description: Create a "shrinkwrapped" way around the selection.
+
