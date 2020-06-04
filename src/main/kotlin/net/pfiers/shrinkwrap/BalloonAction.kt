@@ -1,6 +1,7 @@
 package net.pfiers.shrinkwrap
 
 import net.pfiers.shrinkwrap.exception.BadBaseDataException
+import net.pfiers.shrinkwrap.exception.IterationLimitExceededException
 import net.pfiers.shrinkwrap.exception.NoInnerConcaveHullException
 import net.pfiers.shrinkwrap.util.balloon
 import net.pfiers.shrinkwrap.util.doesntThrow
@@ -58,6 +59,9 @@ class BalloonAction : JosmAction(
             balloon(mouseLatLon, usableNodes, usableWays)
         } catch (ex: NoInnerConcaveHullException) {
             warnNot("\"$ACTION_NAME\" failed: balloon popped because it got too big (no inner concave hull found)")
+            return
+        } catch (ex: IterationLimitExceededException) {
+            warnNot("\"$ACTION_NAME\" failed: iteration limit exceeded, please file an issue")
             return
         }
         val balloonHullWay = Way()

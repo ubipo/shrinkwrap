@@ -1,6 +1,7 @@
 package net.pfiers.shrinkwrap.util
 
 import net.pfiers.shrinkwrap.angle
+import net.pfiers.shrinkwrap.exception.IterationLimitExceededException
 import net.pfiers.shrinkwrap.exception.NoInnerConcaveHullException
 import net.pfiers.shrinkwrap.exception.UnconnectedStartNodeException
 import net.pfiers.shrinkwrap.mostCounterclockwise
@@ -46,33 +47,28 @@ fun shrinkwrap(nodes: LinkedHashSet<Node>, ways: LinkedHashSet<Way>): List<Node>
     val hull = ArrayList<Node>()
 
     // Leftmost node
-    val l = nodes.minBy(Node::lon)!! // Checked with isEmpty()
+    val startNode = nodes.minBy(Node::lon)!! // Checked with isEmpty()
 
-    hull.add(l)
-    val possibleFirstNodes = connectedSelectedNodes(l, nodes, ways)
+    hull.add(startNode)
+    val possibleFirstNodes = connectedSelectedNodes(startNode, nodes, ways)
     if (possibleFirstNodes.isEmpty())
         throw UnconnectedStartNodeException()
+    val secondNode = mostCounterclockwise(startNode, possibleFirstNodes)
 
-    var p = mostCounterclockwise(l, possibleFirstNodes)
-    var prev = l
-    while (p != l) {
+    var p = secondNode
+    var prev = startNode
+    do {
         hull.add(p)
         val connectedSelectedNodes = connectedSelectedNodes(p, nodes, ways)
-        var possibleNextNodes = connectedSelectedNodes.minus(hull.minus(l))
-        if (possibleNextNodes.isEmpty()) {
-            // Backtrack (not including prev)
-            possibleNextNodes = connectedSelectedNodes.minus(prev)
-            if (possibleNextNodes.isEmpty()) {
-                // Backtrack including prev
-                possibleNextNodes = connectedSelectedNodes
-            }
+        val possibleNextNodes = connectedSelectedNodes.minus(prev).ifEmpty {
+            connectedSelectedNodes
         }
         val next = possibleNextNodes.maxBy { node ->
             angle(prev.coor, p.coor, node.coor)
         }!! // Checked
         prev = p
         p = next
-    }
+    } while (!(prev == startNode && p == secondNode))
     hull.add(p)
 
     return hull
@@ -89,30 +85,30 @@ fun balloon(startPos: LatLon, nodes: LinkedHashSet<Node>, ways: LinkedHashSet<Wa
         startPos.greatCircleDistance(node.coor)
     }
 
-    for (startNode in closestNodes) {
+    for (firstNode in closestNodes) {
         val hull = ArrayList<Node>()
         val path = Path2D.Double()
-        hull.add(startNode)
-        path.moveTo(startNode.coor.x, startNode.coor.y)
-        val possibleFirstNodes = connectedSelectedNodes(startNode, nodes, ways)
-        var p = possibleFirstNodes.minBy { node ->
-            angle(startPos, startNode.coor, node.coor)
+        hull.add(firstNode)
+        path.moveTo(firstNode.coor.x, firstNode.coor.y)
+        val possibleFirstNodes = connectedSelectedNodes(firstNode, nodes, ways)
+        if (possibleFirstNodes.isEmpty()) {
+            // Start node is not connected, try the next closest node
+            continue
+        }
+        val secondNode = possibleFirstNodes.minBy { node ->
+            angle(startPos, firstNode.coor, node.coor)
         }!! // Checked
 
-        var prev = startNode
-        while (true) {
+        var p = secondNode
+        var prev = firstNode
+        var i = 0
+        do {
             hull.add(p)
             path.lineTo(p.coor.x, p.coor.y)
             val connectedSelectedNodes = connectedSelectedNodes(p, nodes, ways)
-            // Prevents backtracking to the startNode on the first iteration
-            val possibleNextNodes = when (prev) {
-                startNode -> connectedSelectedNodes.minus(hull)
-                else -> connectedSelectedNodes.minus(hull.minus(startNode))
-            }.ifEmpty {
-                // Backtrack (not including prev), this happens when returning on an inward spike
-                connectedSelectedNodes.minus(prev)
-            }.ifEmpty {
-                // Backtrack including prev, this happens on the tip of an inward spike
+            // Prevent backtracking
+            val possibleNextNodes = connectedSelectedNodes.minus(prev).ifEmpty {
+                // Backtrack, this happens on the tip of an inward spike
                 connectedSelectedNodes
             }.ifEmpty {
                 // Should never occur (how did we get here without a connecting node??)
@@ -121,11 +117,12 @@ fun balloon(startPos: LatLon, nodes: LinkedHashSet<Node>, ways: LinkedHashSet<Wa
             val next = possibleNextNodes.minBy { node ->
                 angle(prev.coor, p.coor, node.coor)
             }!! // Checked
-            if (next == hull[1])
-                break
             prev = p
             p = next
-        }
+
+            if (i++ > 5000)
+                throw IterationLimitExceededException()
+        } while (!(prev == firstNode && next == secondNode))
         path.closePath()
 
         if (path.contains(startPos.x, startPos.y))
