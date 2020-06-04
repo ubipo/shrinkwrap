@@ -2,9 +2,9 @@
 
 Also see: [usage](USAGE.md)  
 
-* [landuse=residential around buildings](#landuse%3Dresidential%20around%20buildings)
-* [Copying a way](#Copying%20a%20way)
-* [leisure=park enclosed by walls](#leisure%3Dpark%20enclosed%20by%20walls)
+* [landuse=residential around buildings](#landuseresidential-around-buildings)
+* [Copying a way](#copying-a-way)
+* [leisure=park enclosed by walls](#leisurepark-enclosed-by-walls)
 
 Any other examples are welcome!
 

@@ -1,9 +1,10 @@
 # Shrinkwrap JOSM Plugin
 
 This plugin is a collection of three actions to create:
-* A [convex hull](https://en.wikipedia.org/wiki/Convex_hull) around the selection
-* A "shrinkwrapped" way (concave hull) around the selection
-* A "ballooned" way (inner concave hull?) around the cursor
+
+* [A convex hull around the selection](USAGE.md#convex-hull)
+* [A "shrinkwrapped" way (concave hull) around the selection](USAGE.md#shrinkwrap)
+* [A "ballooned" way (inner concave hull?) around the cursor](USAGE.md#balloon)
 
 [Usage](USAGE.md)  
 [Examples](EXAMPLES.md)

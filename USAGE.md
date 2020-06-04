@@ -2,11 +2,15 @@
 
 Also see: [examples](EXAMPLES.md)
 
+* [Convex hull](#convex-hull)
+* [Shrinkwrap](#shrinkwrap)
+* [Balloon](#balloon)
+
 ![demonstration screenshots of the three actions](images/combined.png "Demo screenshots")
 
 ## Convex Hull
 
-The simplest of the three. Uses [Jarvis' wrapping algorithm](https://en.wikipedia.org/wiki/Gift_wrapping_algorithm).
+The simplest of the three. Uses [Jarvis' wrapping algorithm](https://en.wikipedia.org/wiki/Gift_wrapping_algorithm) to create a [convex hull](https://en.wikipedia.org/wiki/Convex_hull) around the selection.
 
 **Default shortcut:**  
 ```Alt+Shift+H```
