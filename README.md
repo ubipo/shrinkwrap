@@ -1,6 +1,6 @@
 # Shrinkwrap JOSM Plugin
 
-This plugin is a collection of three actions to create:
+*Shrinkwrap* is a [JOSM](https://josm.openstreetmap.de/) plugin that offers three actions to create:
 
 * [A convex hull around the selection](USAGE.md#convex-hull)
 * [A "shrinkwrapped" way (concave hull) around the selection](USAGE.md#shrinkwrap)

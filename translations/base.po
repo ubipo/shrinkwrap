@@ -1,0 +1,35 @@
+#: src/main/kotlin/net/pfiers/shrinkwrap/BalloonAction.kt:79
+msgid "Balloon"
+msgstr ""
+
+#: src/main/kotlin/net/pfiers/shrinkwrap/BalloonAction.kt:25
+msgid ""
+"Blow up a \"balloon\" around the cursor and trace the polygon it fills "
+"(inverse shrinkwrap). No selection needed. The balloon won''t pop on sharp "
+"points ;)."
+msgstr ""
+
+#: src/main/kotlin/net/pfiers/shrinkwrap/ConvexHullAction.kt:67
+msgid "Convex Hull"
+msgstr ""
+
+#: src/main/kotlin/net/pfiers/shrinkwrap/ShrinkwrapAction.kt:24
+msgid ""
+"Create a \"shrinkwrapped\" (concave-hull-like) way around the selection. "
+"Works on all elements."
+msgstr ""
+
+#: src/main/kotlin/net/pfiers/shrinkwrap/ConvexHullAction.kt:23
+msgid "Create a convex hull way around the selection. Works on all elements."
+msgstr ""
+
+#: src/main/kotlin/net/pfiers/shrinkwrap/ShrinkwrapAction.kt:73
+msgid "Shrinkwrap"
+msgstr ""
+
+#: src/main/kotlin/net/pfiers/shrinkwrap/BalloonAction.kt:30
+#: src/main/kotlin/net/pfiers/shrinkwrap/ShrinkwrapAction.kt:29
+#: src/main/kotlin/net/pfiers/shrinkwrap/ConvexHullAction.kt:28
+#, java-format
+msgid "Tool: {0}"
+msgstr ""

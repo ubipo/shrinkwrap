@@ -2,7 +2,7 @@
 
 Also see: [examples](EXAMPLES.md)
 
-* [Convex hull](#convex-hull)
+* [Convex Hull](#convex-hull)
 * [Shrinkwrap](#shrinkwrap)
 * [Balloon](#balloon)
 

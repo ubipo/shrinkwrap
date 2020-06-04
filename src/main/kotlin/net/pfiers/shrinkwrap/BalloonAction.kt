@@ -23,7 +23,7 @@ class BalloonAction : JosmAction(
         ACTION_NAME, ICON_NAME,
         I18n.tr(
                 "Blow up a \"balloon\" around the cursor and trace the polygon it fills (inverse shrinkwrap). " +
-                        "No selection needed. The balloon won't pop on sharp points ;)."
+                        "No selection needed. The balloon won''t pop on sharp points ;)."
         ),
         org.openstreetmap.josm.tools.Shortcut.registerShortcut(
                 "tools:balloon",
