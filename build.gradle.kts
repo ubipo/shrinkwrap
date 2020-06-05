@@ -3,11 +3,9 @@ import java.net.URL
 
 plugins {
     kotlin("jvm") version "1.3.72"
-    id("org.openstreetmap.josm").version("0.7.0").apply(false)
+    id("org.openstreetmap.josm").version("0.7.0")
 }
 
-group = "net.pfiers";
-version = "v1.0.0";
 //archivesBaseName = "Shrinkwrap"
 
 repositories {
@@ -16,6 +14,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
+    packIntoJar(kotlin("stdlib-jdk8"))
 }
 
 tasks {
@@ -26,8 +25,6 @@ tasks {
         kotlinOptions.jvmTarget = "1.8"
     }
 }
-
-apply(plugin = "org.openstreetmap.josm")
 
 configure<JosmPluginExtension> {
     josmCompileVersion = "16239"
