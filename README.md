@@ -14,7 +14,7 @@
 
 ## Installation
 
-TBD
+In JOSM, go to ```Menu Bar > Edit > Preferences > Plugins``` and search for "shrinkwrap".
 
 
 ## Bugs, suggestions etc.
