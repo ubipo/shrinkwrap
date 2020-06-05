@@ -29,7 +29,7 @@ tasks {
 configure<JosmPluginExtension> {
     josmCompileVersion = "16538"
     manifest {
-        description = "Create a \"shrinkwrapped\" way or a convex hull around the selection, or the maximum area \"ballooned\" way around the cursor (inner concave hull). Useful for mapping landuse or areas."
+        description = "Create a \"shrinkwrapped\" way or a convex hull around the selection, or a \"ballooned\" way around the cursor (inner concave hull). Useful for mapping landuse or areas."
         mainClass = "net.pfiers.shrinkwrap.Shrinkwrap"
         minJosmVersion = "16239"
         author = "Pieter Fiers (Ubipo)"
