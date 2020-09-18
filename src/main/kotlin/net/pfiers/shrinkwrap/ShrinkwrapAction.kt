@@ -18,6 +18,7 @@ import org.openstreetmap.josm.data.osm.Way
 import org.openstreetmap.josm.tools.I18n
 import java.awt.event.ActionEvent
 
+
 class ShrinkwrapAction : JosmAction(
     ACTION_NAME, ICON_NAME,
     I18n.tr(

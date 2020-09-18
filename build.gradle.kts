@@ -2,7 +2,7 @@ import org.openstreetmap.josm.gradle.plugin.config.JosmPluginExtension
 import java.net.URL
 
 plugins {
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.4.10"
     id("org.openstreetmap.josm").version("0.7.0")
 }
 
@@ -27,7 +27,7 @@ tasks {
 }
 
 configure<JosmPluginExtension> {
-    josmCompileVersion = "16538"
+    josmCompileVersion = "17013"
     manifest {
         description = "Create a \"shrinkwrapped\" way or a convex hull around the selection, or a \"ballooned\" way around the cursor (inner concave hull). Useful for mapping landuse or areas."
         mainClass = "net.pfiers.shrinkwrap.Shrinkwrap"

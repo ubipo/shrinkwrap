@@ -20,7 +20,7 @@ fun convexHull(nodes: LinkedHashSet<Node>): List<Node> {
     val hull = ArrayList<Node>()
 
     // Leftmost node
-    val l = nodes.minBy(Node::lon)!! // Checked with isEmpty()
+    val l = nodes.minByOrNull(Node::lon)!! // Checked with isEmpty()
 
     var p = l
     do {
@@ -47,7 +47,7 @@ fun shrinkwrap(nodes: LinkedHashSet<Node>, ways: LinkedHashSet<Way>): List<Node>
     val hull = ArrayList<Node>()
 
     // Leftmost node
-    val startNode = nodes.minBy(Node::lon)!! // Checked with isEmpty()
+    val startNode = nodes.minByOrNull(Node::lon)!! // Checked with isEmpty()
 
     hull.add(startNode)
     val possibleFirstNodes = connectedSelectedNodes(startNode, nodes, ways)
@@ -63,13 +63,12 @@ fun shrinkwrap(nodes: LinkedHashSet<Node>, ways: LinkedHashSet<Way>): List<Node>
         val possibleNextNodes = connectedSelectedNodes.minus(prev).ifEmpty {
             connectedSelectedNodes
         }
-        val next = possibleNextNodes.maxBy { node ->
+        val next = possibleNextNodes.maxByOrNull { node ->
             angle(prev.coor, p.coor, node.coor)
         }!! // Checked
         prev = p
         p = next
     } while (!(prev == startNode && p == secondNode))
-    hull.add(p)
 
     return hull
 }
@@ -95,7 +94,7 @@ fun balloon(startPos: LatLon, nodes: LinkedHashSet<Node>, ways: LinkedHashSet<Wa
             // Start node is not connected, try the next closest node
             continue
         }
-        val secondNode = possibleFirstNodes.minBy { node ->
+        val secondNode = possibleFirstNodes.minByOrNull { node ->
             angle(startPos, firstNode.coor, node.coor)
         }!! // Checked
 
