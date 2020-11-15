@@ -14,9 +14,9 @@ import org.openstreetmap.josm.plugins.PluginInformation
 @Suppress("unused")
 class Shrinkwrap(info: PluginInformation?) : Plugin(info) {
     init {
-        val toolsMenu = MainApplication.getMenu().toolsMenu
-        MainMenu.add(toolsMenu, ConvexHullAction())
-        MainMenu.add(toolsMenu, ShrinkwrapAction())
-        MainMenu.add(toolsMenu, BalloonAction())
+        val moreToolsMenu = MainApplication.getMenu().moreToolsMenu
+        MainMenu.add(moreToolsMenu, ConvexHullAction())
+        MainMenu.add(moreToolsMenu, ShrinkwrapAction())
+        MainMenu.add(moreToolsMenu, BalloonAction())
     }
 }
