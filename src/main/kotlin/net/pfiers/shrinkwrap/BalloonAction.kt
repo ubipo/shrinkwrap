@@ -4,7 +4,6 @@ import net.pfiers.shrinkwrap.exception.BadBaseDataException
 import net.pfiers.shrinkwrap.exception.IterationLimitExceededException
 import net.pfiers.shrinkwrap.exception.NoInnerConcaveHullException
 import net.pfiers.shrinkwrap.util.balloon
-import net.pfiers.shrinkwrap.util.doesntThrow
 import net.pfiers.shrinkwrap.util.warnNot
 import org.openstreetmap.josm.actions.JosmAction
 import org.openstreetmap.josm.command.AddCommand
@@ -37,9 +36,7 @@ class BalloonAction : JosmAction(
     }
 
     override fun updateEnabledState(selection: Collection<OsmPrimitive>?) {
-        isEnabled = doesntThrow(BadBaseDataException::class) {
-            getBaseData(layerManager.editDataSet)
-        }
+        isEnabled = hasUsableData(layerManager.editDataSet)
     }
 
     override fun actionPerformed(e: ActionEvent?) {
@@ -78,6 +75,14 @@ class BalloonAction : JosmAction(
     companion object {
         val ACTION_NAME: String = I18n.tr("Balloon")
         const val ICON_NAME = "balloon"
+
+        private fun hasUsableData(ds: DataSet?): Boolean {
+            if (ds == null || ds.isLocked) {
+                return false
+            }
+            return ds.nodes.stream().filter(Node::isUsable).limit(3).count() >= 3 &&
+                    ds.ways.stream().filter(Way::isUsable).findAny().isPresent
+        }
 
         private fun getBaseData(ds: DataSet?): Pair<LinkedHashSet<Node>, LinkedHashSet<Way>> {
             if (ds == null || ds.isLocked)
