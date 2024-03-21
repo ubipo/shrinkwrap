@@ -3,7 +3,7 @@ import java.net.URL
 
 plugins {
     kotlin("jvm") version "1.4.10"
-    id("org.openstreetmap.josm").version("0.7.0")
+    id("org.openstreetmap.josm").version("0.8.2")
 }
 
 //archivesBaseName = "Shrinkwrap"
