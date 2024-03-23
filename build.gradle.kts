@@ -1,9 +1,12 @@
 import org.openstreetmap.josm.gradle.plugin.config.JosmPluginExtension
 import java.net.URL
 
+val jvmTarget = "11"
+val kotlinStdlibDependency = "stdlib-jdk11"
+
 plugins {
-    kotlin("jvm") version "1.4.10"
-    id("org.openstreetmap.josm").version("0.7.0")
+    kotlin("jvm") version "1.9.23"
+    id("org.openstreetmap.josm").version("0.8.2")
 }
 
 //archivesBaseName = "Shrinkwrap"
@@ -13,25 +16,26 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    packIntoJar(kotlin("stdlib-jdk8"))
+    val kotlinStdlibDependencyId = kotlin(kotlinStdlibDependency)
+    implementation(kotlinStdlibDependencyId)
+    packIntoJar(kotlinStdlibDependencyId)
 }
 
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = jvmTarget
     }
     compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = jvmTarget
     }
 }
 
 configure<JosmPluginExtension> {
-    josmCompileVersion = "17084"
+    josmCompileVersion = "19017"
     manifest {
         description = "Create a \"shrinkwrapped\" way or a convex hull around the selection, or a \"ballooned\" way around the cursor (inner concave hull). Useful for mapping landuse or areas."
         mainClass = "net.pfiers.shrinkwrap.Shrinkwrap"
-        minJosmVersion = "16239"
+        minJosmVersion = "19017"
         author = "Pieter Fiers (Ubipo)"
         canLoadAtRuntime = false
         iconPath = "icons/icon.svg"
