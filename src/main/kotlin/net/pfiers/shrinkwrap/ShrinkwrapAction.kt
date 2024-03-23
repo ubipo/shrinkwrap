@@ -3,7 +3,6 @@ package net.pfiers.shrinkwrap
 import net.pfiers.shrinkwrap.exception.BadBaseDataException
 import net.pfiers.shrinkwrap.exception.UnconnectedStartNodeException
 import net.pfiers.shrinkwrap.util.allNodesFrom
-import net.pfiers.shrinkwrap.util.doesntThrow
 import net.pfiers.shrinkwrap.util.shrinkwrap
 import net.pfiers.shrinkwrap.util.warnNot
 import org.openstreetmap.josm.actions.JosmAction
@@ -37,9 +36,7 @@ class ShrinkwrapAction : JosmAction(
     }
 
     override fun updateEnabledState(selection: Collection<OsmPrimitive>?) {
-        isEnabled = doesntThrow(BadBaseDataException::class) {
-            getBaseData(layerManager.editDataSet)
-        }
+        isEnabled = hasUsableData(layerManager.editDataSet)
     }
 
     override fun actionPerformed(e: ActionEvent?) {
@@ -74,6 +71,14 @@ class ShrinkwrapAction : JosmAction(
         val ACTION_NAME: String = I18n.tr("Shrinkwrap")
         const val ICON_NAME = "shrinkwrap"
 
+        private fun hasUsableData(ds: DataSet?): Boolean {
+            if (ds == null || ds.isLocked) {
+                return false
+            }
+            return ds.selectedNodes.stream().filter(Node::isUsable).limit(3).count() >= 3 &&
+                    ds.ways.stream().filter(Way::isUsable).findAny().isPresent
+        }
+
         private fun getBaseData(ds: DataSet?): Pair<LinkedHashSet<Node>, LinkedHashSet<Way>> {
             if (ds == null || ds.isLocked)
                 throw BadBaseDataException("\"$ACTION_NAME\" requires an active, editable layer")
@@ -83,7 +88,7 @@ class ShrinkwrapAction : JosmAction(
                 throw BadBaseDataException("\"$ACTION_NAME\" requires at least three (indirectly) selected nodes")
 
             val usableWays = LinkedHashSet(ds.ways.filter(Way::isUsable))
-            if (selectedNodes.size < 1)
+            if (usableWays.size < 1)
                 throw BadBaseDataException("\"$ACTION_NAME\" requires at least one way on the active layer")
 
             return Pair(selectedNodes, usableWays)
