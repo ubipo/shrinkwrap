@@ -90,13 +90,9 @@ fun balloon(startPos: LatLon, nodes: LinkedHashSet<Node>, ways: LinkedHashSet<Wa
         hull.add(firstNode)
         path.moveTo(firstNode.coor.x, firstNode.coor.y)
         val possibleFirstNodes = connectedSelectedNodes(firstNode, nodes, ways)
-        if (possibleFirstNodes.isEmpty()) {
-            // Start node is not connected, try the next closest node
-            continue
-        }
         val secondNode = possibleFirstNodes.minByOrNull { node ->
             angle(startPos, firstNode.coor, node.coor)
-        }!! // Checked
+        } ?: continue // Start node is not connected, try the next closest node
 
         var p = secondNode
         var prev = firstNode
@@ -109,13 +105,11 @@ fun balloon(startPos: LatLon, nodes: LinkedHashSet<Node>, ways: LinkedHashSet<Wa
             val possibleNextNodes = connectedSelectedNodes.minus(prev).ifEmpty {
                 // Backtrack, this happens on the tip of an inward spike
                 connectedSelectedNodes
-            }.ifEmpty {
-                // Should never occur (how did we get here without a connecting node??)
-                throw Exception("Shouldn't occur")
             }
-            val next = possibleNextNodes.minBy { node ->
+            val next = possibleNextNodes.minByOrNull { node ->
                 angle(prev.coor, p.coor, node.coor)
-            }!! // Checked
+            } ?: throw Exception("Shouldn't occur") // Should never occur (how did we get here
+            // without a connecting node??) TODO: Why is this state representable?
             prev = p
             p = next
 
