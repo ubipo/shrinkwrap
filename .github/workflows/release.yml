@@ -21,14 +21,16 @@ jobs:
       - name: Exit if tagged commit has not been committed to main
         run: |
           if [[ ! $(git tag --merged "origin/main") =~ "${{ github.ref_name }}" ]]; then
-            echo "Tagged commit has not been merged to main"
+            echo "Tagged commit has not been merged to main (tag: '${{ github.ref_name }}')"
             exit -1
           fi
 
       - name: Exit if tag does not match plugin version
         run: |
-          if [[ ! $(grep -oP --color=never "(?<=^version=)v[\d\.]+$" gradle.properties) = ${{ github.ref_name }} ]]; then
-            echo "Tag does not match plugin version"
+          tag_name=${{ github.ref_name }}
+          plugin_version=$(grep -oP --color=never "(?<=^version=)v[\d\.]+$" gradle.properties)
+          if [[ ! $tag_name = $plugin_version ]]; then
+            echo "Tag does not match plugin version (tag: '$tag_name', plugin version: '$plugin_version')"
             exit -1
           fi
 
