@@ -1,7 +1,9 @@
+import org.jetbrains.kotlin.gradle.tasks.UsesKotlinJavaToolchain
 import org.openstreetmap.josm.gradle.plugin.config.JosmPluginExtension
+import java.net.URI
 import java.net.URL
 
-val jvmTarget = "11"
+val jvmTarget = 11
 val kotlinStdlibDependency = "stdlib-jdk8"
 
 plugins {
@@ -21,13 +23,16 @@ dependencies {
     packIntoJar(kotlinStdlibDependencyId)
 }
 
-tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = jvmTarget
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = jvmTarget
-    }
+val service = project.extensions.getByType<JavaToolchainService>()
+val customLauncher = service.launcherFor {
+    languageVersion.set(JavaLanguageVersion.of(jvmTarget))
+}
+project.tasks.withType<UsesKotlinJavaToolchain>().configureEach {
+    kotlinJavaToolchain.toolchain.use(customLauncher)
+}
+
+kotlin {
+    jvmToolchain(jvmTarget)
 }
 
 configure<JosmPluginExtension> {
@@ -39,7 +44,7 @@ configure<JosmPluginExtension> {
         author = "Pieter Fiers (Ubipo)"
         canLoadAtRuntime = false
         iconPath = "icons/icon.svg"
-        website = URL("https://github.com/ubipo/shrinkwrap")
+        website = URI("https://github.com/ubipo/shrinkwrap").toURL()
     }
     i18n {
         bugReportEmail = "pieter@pfiers.net"
