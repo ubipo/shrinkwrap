@@ -21,7 +21,7 @@ jobs:
           raw=$(git branch -r --contains ${{ github.ref }})
           branch=${raw##*/}
           if [[ ! $branch = "main" ]]; then
-            echo "Not on main branch"
+            echo "Not on main branch (branch: $branch, raw: $raw, ref: ${{ github.ref }})"
             exit -1
           fi
 
