@@ -9,7 +9,7 @@ env:
   PLUGIN_ID: shrinkwrap
 
 jobs:
-  Explore-GitHub-Actions:
+  Release:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -18,16 +18,16 @@ jobs:
       - name: Exit if not on main branch
         id: check_step
         run: |
-          raw=$(git branch -r --contains ${{ github.ref }})
+          raw=$(git branch -r --contains ${{ github.ref_name }})
           branch=${raw##*/}
           if [[ ! $branch = "main" ]]; then
-            echo "Not on main branch (branch: $branch, raw: $raw, ref: ${{ github.ref }})"
+            echo "Not on main branch (branch: $branch, raw: $raw, ref_name: ${{ github.ref_name }})"
             exit -1
           fi
 
       - name: Exit if tag does not match plugin version
         run: |
-          if [[ ! $(grep -oP --color=never "(?<=^version=)v[\d\.]+$" gradle.properties) = ${{ github.ref }} ]]; then
+          if [[ ! $(grep -oP --color=never "(?<=^version=)v[\d\.]+$" gradle.properties) = ${{ github.ref_name }} ]]; then
             echo "Tag does not match plugin version"
             exit -1
           fi
