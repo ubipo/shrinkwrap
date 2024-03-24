@@ -1,6 +1,7 @@
 package net.pfiers.shrinkwrap
 
 import net.pfiers.shrinkwrap.exception.BadBaseDataException
+import net.pfiers.shrinkwrap.exception.BalloonDurationLimitExceededException
 import net.pfiers.shrinkwrap.exception.IterationLimitExceededException
 import net.pfiers.shrinkwrap.exception.NoInnerConcaveHullException
 import net.pfiers.shrinkwrap.util.balloon
@@ -69,7 +70,10 @@ class BalloonAction : JosmAction(
             warnNotification("\"$ACTION_NAME\" failed: balloon popped because it got too big (no inner concave hull found)")
             return
         } catch (ex: IterationLimitExceededException) {
-            warnNotification("\"$ACTION_NAME\" failed: iteration limit exceeded, please file an issue")
+            warnNotification("\"$ACTION_NAME\" failed: iteration limit exceeded, please file an issue if this was unexpected")
+            return
+        } catch (ex: BalloonDurationLimitExceededException) {
+            warnNotification("\"$ACTION_NAME\" failed: it took too long to blow up the balloon, please file an issue if this was unexpected")
             return
         }
         val balloonHullWay = Way()
@@ -88,24 +92,25 @@ class BalloonAction : JosmAction(
         const val ICON_NAME = "balloon"
 
         private fun hasUsableData(ds: DataSet?): Boolean {
-            if (ds == null || ds.isLocked) {
-                return false
-            }
+            if (ds == null || ds.isLocked) return false
             return ds.nodes.stream().filter(Node::isUsable).limit(3).count() >= 3 &&
                     ds.ways.stream().filter(Way::isUsable).findAny().isPresent
         }
 
         private fun getBaseData(ds: DataSet?): Pair<LinkedHashSet<Node>, LinkedHashSet<Way>> {
-            if (ds == null || ds.isLocked)
+            if (ds == null || ds.isLocked) {
                 throw BadBaseDataException("${ShrinkwrapAction.ACTION_NAME} requires an active, editable layer")
+            }
 
             val usableNodes = LinkedHashSet(ds.nodes.filter(Node::isUsable))
-            if (usableNodes.size < 3)
+            if (usableNodes.size < 3) {
                 throw BadBaseDataException("\"$ACTION_NAME\" requires at least three nodes on the active layer")
+            }
 
             val usableWays = LinkedHashSet(ds.ways.filter(Way::isUsable))
-            if (usableWays.isEmpty())
+            if (usableWays.isEmpty()) {
                 throw BadBaseDataException("\"$ACTION_NAME\" requires at least one way on the active layer")
+            }
 
             return Pair(usableNodes, usableWays)
         }

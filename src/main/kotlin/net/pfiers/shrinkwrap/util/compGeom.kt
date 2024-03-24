@@ -1,6 +1,7 @@
 package net.pfiers.shrinkwrap.util
 
 import net.pfiers.shrinkwrap.angle
+import net.pfiers.shrinkwrap.exception.BalloonDurationLimitExceededException
 import net.pfiers.shrinkwrap.exception.IterationLimitExceededException
 import net.pfiers.shrinkwrap.exception.NoInnerConcaveHullException
 import net.pfiers.shrinkwrap.exception.UnconnectedStartNodeException
@@ -9,6 +10,11 @@ import org.openstreetmap.josm.data.coor.LatLon
 import org.openstreetmap.josm.data.osm.Node
 import org.openstreetmap.josm.data.osm.Way
 import java.awt.geom.Path2D
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
+
+const val BALLOON_MAX_ITERATIONS = 4000
+val BALLOON_MAX_TIME = 3.seconds
 
 /**
  * Jarvis march alg, adapted from https://en.wikipedia.org/wiki/Gift_wrapping_algorithm
@@ -84,6 +90,7 @@ fun balloon(startPos: LatLon, nodes: LinkedHashSet<Node>, ways: LinkedHashSet<Wa
         startPos.greatCircleDistance(node.coor)
     }
 
+    val balloonStartTime = TimeSource.Monotonic.markNow()
     for (firstNode in closestNodes) {
         val hull = ArrayList<Node>()
         val path = Path2D.Double()
@@ -113,8 +120,11 @@ fun balloon(startPos: LatLon, nodes: LinkedHashSet<Node>, ways: LinkedHashSet<Wa
             prev = p
             p = next
 
-            if (i++ > 5000)
+            if (i++ > BALLOON_MAX_ITERATIONS)
                 throw IterationLimitExceededException()
+
+            if (balloonStartTime.elapsedNow() > BALLOON_MAX_TIME)
+                throw BalloonDurationLimitExceededException()
         } while (!(prev == firstNode && next == secondNode))
         path.closePath()
 
