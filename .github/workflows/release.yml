@@ -15,9 +15,12 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
+      - name: Fetch main
+        run: git fetch origin main
+
       - name: Exit if tagged commit has not been committed to main
         run: |
-          if [[ ! $(git tag --merged main) =~ "${{ github.ref_name }}" ]]; then
+          if [[ ! $(git tag --merged "origin/main") =~ "${{ github.ref_name }}" ]]; then
             echo "Tagged commit has not been merged to main"
             exit -1
           fi
