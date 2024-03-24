@@ -16,8 +16,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Exit if not on main branch
-        if: endsWith(github.ref, 'main') == false
-        run: exit -1
+        id: check_step
+        run: |
+          raw=$(git branch -r --contains ${{ github.ref }})
+          branch=${raw##*/}
+          if [[ ! $branch = "main" ]]; then
+            echo "Not on main branch"
+            exit -1
+          fi
 
       - name: Exit if tag does not match plugin version
         run: |
