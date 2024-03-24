@@ -15,13 +15,10 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Exit if not on main branch
-        id: check_step
+      - name: Exit if tagged commit has not been committed to main
         run: |
-          raw=$(git branch -r --contains ${{ github.ref_name }})
-          branch=${raw##*/}
-          if [[ ! $branch = "main" ]]; then
-            echo "Not on main branch (branch: $branch, raw: $raw, ref_name: ${{ github.ref_name }})"
+          if [[ ! $(git tag --merged main) =~ "${{ github.ref_name }}" ]]; then
+            echo "Tagged commit has not been merged to main"
             exit -1
           fi
 
