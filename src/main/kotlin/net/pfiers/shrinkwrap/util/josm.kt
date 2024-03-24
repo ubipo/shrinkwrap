@@ -1,6 +1,5 @@
 package net.pfiers.shrinkwrap.util
 
-import net.pfiers.shrinkwrap.exception.BadBaseDataException
 import org.openstreetmap.josm.data.osm.*
 import org.openstreetmap.josm.gui.Notification
 import org.openstreetmap.josm.tools.I18n
@@ -31,10 +30,10 @@ fun allNodesFrom(primitives: Collection<OsmPrimitive>): Set<Node> {
     return wayNodes.union(nodes).union(relationNodes)
 }
 
-fun warnNot(msg: String) {
-    val not = Notification(I18n.tr(
+fun warnNotification(msg: String) {
+    val notification = Notification(I18n.tr(
             msg
     ))
-    not.setIcon(JOptionPane.WARNING_MESSAGE)
-    not.show()
+    notification.setIcon(JOptionPane.WARNING_MESSAGE)
+    notification.show()
 }

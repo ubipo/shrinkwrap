@@ -4,7 +4,7 @@ import net.pfiers.shrinkwrap.exception.BadBaseDataException
 import net.pfiers.shrinkwrap.util.allNodesFrom
 import net.pfiers.shrinkwrap.util.convexHull
 import net.pfiers.shrinkwrap.util.doesntThrow
-import net.pfiers.shrinkwrap.util.warnNot
+import net.pfiers.shrinkwrap.util.warnNotification
 import org.openstreetmap.josm.actions.JosmAction
 import org.openstreetmap.josm.command.AddCommand
 import org.openstreetmap.josm.command.SelectCommand
@@ -46,7 +46,7 @@ class ConvexHullAction : JosmAction(
         val selectedNodes = try {
             getBaseData(ds)
         } catch (ex: BadBaseDataException) {
-            warnNot(ex.message)
+            warnNotification(ex.message)
             return
         }
 

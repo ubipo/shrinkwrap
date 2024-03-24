@@ -4,7 +4,7 @@ import net.pfiers.shrinkwrap.exception.BadBaseDataException
 import net.pfiers.shrinkwrap.exception.UnconnectedStartNodeException
 import net.pfiers.shrinkwrap.util.allNodesFrom
 import net.pfiers.shrinkwrap.util.shrinkwrap
-import net.pfiers.shrinkwrap.util.warnNot
+import net.pfiers.shrinkwrap.util.warnNotification
 import org.openstreetmap.josm.actions.JosmAction
 import org.openstreetmap.josm.command.AddCommand
 import org.openstreetmap.josm.command.SelectCommand
@@ -45,7 +45,7 @@ class ShrinkwrapAction : JosmAction(
         val (selectedNodes, usableWays) = try {
             getBaseData(ds)
         } catch (ex: BadBaseDataException) {
-            warnNot(ex.message)
+            warnNotification(ex.message)
             return
         }
 
@@ -53,7 +53,7 @@ class ShrinkwrapAction : JosmAction(
         val shrinkwrapHull = try {
             shrinkwrap(selectedNodes, usableWays)
         } catch (ex: UnconnectedStartNodeException) {
-            warnNot("\"$ACTION_NAME\" failed: the start-node (leftmost node) is not connected to any other selected node")
+            warnNotification("\"$ACTION_NAME\" failed: the start-node (leftmost node) is not connected to any other selected node")
             return
         }
         val shrinkwrapHullWay = Way()
