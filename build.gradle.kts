@@ -2,7 +2,7 @@ import org.openstreetmap.josm.gradle.plugin.config.JosmPluginExtension
 import java.net.URL
 
 val jvmTarget = "11"
-val kotlinStdlibDependency = "stdlib-jdk11"
+val kotlinStdlibDependency = "stdlib-jdk8"
 
 plugins {
     kotlin("jvm") version "1.9.23"
