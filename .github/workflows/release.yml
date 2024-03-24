@@ -1,0 +1,65 @@
+name: Release
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+env:
+  PLUGIN_ID: shrinkwrap
+
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Exit if not on main branch
+        if: endsWith(github.ref, 'main') == false
+        run: exit -1
+
+      - name: Exit if tag does not match plugin version
+        run: |
+          if [[ ! $(grep -oP --color=never "(?<=^version=)v[\d\.]+$" gradle.properties) = ${{ github.ref }} ]]; then
+            echo "Tag does not match plugin version"
+            exit -1
+          fi
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Build plugin to distribution JAR
+        run: ./gradlew build
+
+      - name: Create Draft Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{  github.ref_name }}"
+          release_name: ${{  github.ref_name }}"
+          draft: true
+          prerelease: false
+
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/dist/${{ env.PLUGIN_ID }}.jar
+          asset_name: ${{ env.PLUGIN_ID }}.jar
+          asset_content_type: application/java-archive
+
+      - uses: eregon/publish-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create_release.outputs.id }}
