@@ -1,11 +1,9 @@
 package net.pfiers.shrinkwrap.util
 
-import net.pfiers.shrinkwrap.angle
 import net.pfiers.shrinkwrap.exception.BalloonDurationLimitExceededException
 import net.pfiers.shrinkwrap.exception.IterationLimitExceededException
 import net.pfiers.shrinkwrap.exception.NoInnerConcaveHullException
 import net.pfiers.shrinkwrap.exception.UnconnectedStartNodeException
-import net.pfiers.shrinkwrap.mostCounterclockwise
 import org.openstreetmap.josm.data.coor.ILatLon
 import org.openstreetmap.josm.data.coor.LatLon
 import org.openstreetmap.josm.data.osm.Node

@@ -1,4 +1,4 @@
-package net.pfiers.shrinkwrap
+package net.pfiers.shrinkwrap.util
 
 import org.openstreetmap.josm.data.coor.LatLon
 import org.openstreetmap.josm.data.osm.Node

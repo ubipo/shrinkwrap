@@ -16,12 +16,8 @@ import org.openstreetmap.josm.data.osm.Node
 import org.openstreetmap.josm.data.osm.OsmPrimitive
 import org.openstreetmap.josm.data.osm.Way
 import org.openstreetmap.josm.gui.MainApplication
-import org.openstreetmap.josm.gui.MapView
-import org.openstreetmap.josm.gui.Notification
-import org.openstreetmap.josm.tools.I18n
 import org.openstreetmap.josm.tools.I18n.tr
 import java.awt.event.ActionEvent
-import javax.swing.JOptionPane
 
 class BalloonAction : JosmAction(
         ACTION_NAME, ICON_NAME,
