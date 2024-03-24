@@ -30,7 +30,7 @@ configure<JosmPluginExtension> {
         mainClass = "net.pfiers.shrinkwrap.Shrinkwrap"
         minJosmVersion = "19017"
         author = "Pieter Fiers (Ubipo)"
-        canLoadAtRuntime = false
+        canLoadAtRuntime = true
         iconPath = "icons/icon.svg"
         website = URI("https://github.com/ubipo/shrinkwrap").toURL()
     }
