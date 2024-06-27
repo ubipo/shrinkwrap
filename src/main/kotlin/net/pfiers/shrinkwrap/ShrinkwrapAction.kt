@@ -3,6 +3,8 @@ package net.pfiers.shrinkwrap
 import net.pfiers.shrinkwrap.exception.BadBaseDataException
 import net.pfiers.shrinkwrap.exception.UnconnectedStartNodeException
 import net.pfiers.shrinkwrap.util.allNodesFrom
+import net.pfiers.shrinkwrap.util.doesntThrow
+import net.pfiers.shrinkwrap.util.takeOnlyIfAtLeast
 import net.pfiers.shrinkwrap.util.shrinkwrap
 import net.pfiers.shrinkwrap.util.warnNotification
 import org.openstreetmap.josm.actions.JosmAction
@@ -36,7 +38,7 @@ class ShrinkwrapAction : JosmAction(
     }
 
     override fun updateEnabledState(selection: Collection<OsmPrimitive>?) {
-        isEnabled = hasUsableData(layerManager.editDataSet)
+        isEnabled = doesntThrow(BadBaseDataException::class) { getBaseData(layerManager.editDataSet) }
     }
 
     override fun actionPerformed(e: ActionEvent?) {
@@ -57,7 +59,7 @@ class ShrinkwrapAction : JosmAction(
             return
         }
         val shrinkwrapHullWay = Way()
-        shrinkwrapHullWay.nodes = shrinkwrapHull
+        shrinkwrapHullWay.nodes = shrinkwrapHull.toList()
 
         // Set result
         val commands = listOf(
@@ -71,27 +73,17 @@ class ShrinkwrapAction : JosmAction(
         val ACTION_NAME: String = I18n.tr("Shrinkwrap")
         const val ICON_NAME = "shrinkwrap"
 
-        private fun hasUsableData(ds: DataSet?): Boolean {
-            if (ds == null || ds.isLocked) {
-                return false
-            }
-            return ds.selectedNodes.stream().filter(Node::isUsable).limit(3).count() >= 3 &&
-                    ds.ways.stream().filter(Way::isUsable).findAny().isPresent
-        }
-
-        private fun getBaseData(ds: DataSet?): Pair<LinkedHashSet<Node>, LinkedHashSet<Way>> {
+        private fun getBaseData(ds: DataSet?): Pair<Set<Node>, Set<Way>> {
             if (ds == null || ds.isLocked)
                 throw BadBaseDataException("\"$ACTION_NAME\" requires an active, editable layer")
 
-            val selectedNodes = LinkedHashSet(allNodesFrom(ds.selected).filter(Node::isUsable))
-            if (selectedNodes.size < 3)
-                throw BadBaseDataException("\"$ACTION_NAME\" requires at least three (indirectly) selected nodes")
+            val usableNodeSequence = allNodesFrom(ds.selected).filter(Node::isUsable).takeOnlyIfAtLeast(3)
+                ?: throw BadBaseDataException("\"$ACTION_NAME\" requires at least three (indirectly) selected nodes")
 
-            val usableWays = LinkedHashSet(ds.ways.filter(Way::isUsable))
-            if (usableWays.size < 1)
-                throw BadBaseDataException("\"$ACTION_NAME\" requires at least one way on the active layer")
+            val usableWaysSequence = ds.ways.asSequence().filter(Way::isUsable).takeOnlyIfAtLeast(1)
+                ?: throw BadBaseDataException("\"$ACTION_NAME\" requires at least one way on the active layer")
 
-            return Pair(selectedNodes, usableWays)
+            return Pair(usableNodeSequence.toSet(), usableWaysSequence.toSet())
         }
     }
 }

@@ -73,7 +73,7 @@ class BalloonAction : JosmAction(
             return
         }
         val balloonHullWay = Way()
-        balloonHullWay.nodes = balloonHull
+        balloonHullWay.nodes = balloonHull.toList()
 
         // Set result
         val commands = listOf(

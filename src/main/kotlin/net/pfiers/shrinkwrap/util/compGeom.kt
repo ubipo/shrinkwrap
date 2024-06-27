@@ -18,7 +18,7 @@ val BALLOON_MAX_TIME = 3.seconds
 /**
  * Jarvis march alg, adapted from https://en.wikipedia.org/wiki/Gift_wrapping_algorithm
  */
-fun convexHull(nodes: LinkedHashSet<Node>): List<Node> {
+fun convexHull(nodes: Collection<Node>): Collection<Node> {
     if (nodes.isEmpty())
         throw IllegalArgumentException("<nodes> must not be empty")
 
@@ -42,7 +42,7 @@ fun convexHull(nodes: LinkedHashSet<Node>): List<Node> {
  *
  * @see convexHull
  */
-fun shrinkwrap(nodes: LinkedHashSet<Node>, ways: LinkedHashSet<Way>): List<Node> {
+fun shrinkwrap(nodes: Collection<Node>, ways: Collection<Way>): Collection<Node> {
     if (nodes.isEmpty())
         throw IllegalArgumentException("<nodes> must not be empty")
 
@@ -78,7 +78,7 @@ fun shrinkwrap(nodes: LinkedHashSet<Node>, ways: LinkedHashSet<Way>): List<Node>
     return hull
 }
 
-fun balloon(startPos: LatLon, nodes: LinkedHashSet<Node>, ways: LinkedHashSet<Way>): List<Node> {
+fun balloon(startPos: LatLon, nodes: Collection<Node>, ways: Collection<Way>): Collection<Node> {
     if (nodes.isEmpty())
         throw IllegalArgumentException("<nodes> must not be empty")
 

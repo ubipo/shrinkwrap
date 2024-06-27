@@ -4,6 +4,7 @@ import net.pfiers.shrinkwrap.exception.BadBaseDataException
 import net.pfiers.shrinkwrap.util.allNodesFrom
 import net.pfiers.shrinkwrap.util.convexHull
 import net.pfiers.shrinkwrap.util.doesntThrow
+import net.pfiers.shrinkwrap.util.takeOnlyIfAtLeast
 import net.pfiers.shrinkwrap.util.warnNotification
 import org.openstreetmap.josm.actions.JosmAction
 import org.openstreetmap.josm.command.AddCommand
@@ -53,7 +54,7 @@ class ConvexHullAction : JosmAction(
         // Run alg
         val hull = convexHull(selectedNodes)
         val hullWay = Way()
-        hullWay.nodes = hull
+        hullWay.nodes = hull.toList()
 
         // Set result
         val commands = listOf(
@@ -67,15 +68,14 @@ class ConvexHullAction : JosmAction(
         val ACTION_NAME: String = I18n.tr("Convex Hull")
         const val ICON_NAME = "convexhull"
 
-        private fun getBaseData(ds: DataSet?): LinkedHashSet<Node> {
+        private fun getBaseData(ds: DataSet?): Collection<Node> {
             if (ds == null || ds.isLocked)
                 throw BadBaseDataException("\"$ACTION_NAME\" requires an active, editable layer")
 
-            val selectedNodes = LinkedHashSet(allNodesFrom(ds.selected).filter(Node::isUsable))
-            if (selectedNodes.size < 3)
-                throw BadBaseDataException("\"$ACTION_NAME\" requires at least three (indirectly) selected nodes")
+            val usableNodeSequence = allNodesFrom(ds.selected).filter(Node::isUsable).takeOnlyIfAtLeast(3)
+                ?: throw BadBaseDataException("\"$ACTION_NAME\" requires at least three (indirectly) selected nodes")
 
-            return selectedNodes
+            return usableNodeSequence.toSet()
         }
     }
 }

@@ -23,12 +23,16 @@ fun connectedSelectedNodes(refNode: Node, selected: Collection<Node>, ways: Coll
     return connectedNodes
 }
 
-fun allNodesFrom(primitives: Collection<OsmPrimitive>): Set<Node> {
-    val nodes = primitives.filterIsInstance<Node>()
-    val wayNodes = primitives.filterIsInstance<Way>().flatMap(Way::getNodes)
-    val relationNodes = primitives.filterIsInstance<Relation>().flatMap { r -> allNodesFrom(r.memberPrimitives) }
-    return wayNodes.union(nodes).union(relationNodes)
-}
+fun allNodesFrom(
+    primitives: Collection<OsmPrimitive>,
+): Sequence<Node> = primitives.asSequence().flatMap { primitive ->
+    when (primitive) {
+        is Node -> sequenceOf(primitive)
+        is Way -> primitive.nodes.asSequence()
+        is Relation -> allNodesFrom(primitive.memberPrimitives)
+        else -> { sequenceOf() }
+    }
+}.distinct()
 
 fun warnNotification(msg: String) {
     val notification = Notification(I18n.tr(
