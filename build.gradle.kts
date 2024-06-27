@@ -24,7 +24,7 @@ kotlin {
 }
 
 configure<JosmPluginExtension> {
-    josmCompileVersion = "19017"
+    josmCompileVersion = "19096"
     manifest {
         description = "Create a \"shrinkwrapped\" way or a convex hull around the selection, or a \"ballooned\" way around the cursor (inner concave hull). Useful for mapping landuse or areas."
         mainClass = "net.pfiers.shrinkwrap.Shrinkwrap"
